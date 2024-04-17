@@ -9,12 +9,12 @@ You can also include images in this folder and reference them in the markdown. E
 
 ## How it works
 
-Explain how your project works
+The MAC unit takes 2 16 bit DL Float inputs in 2 Cycles and returns a 16 bit DL Float output
 
 ## How to test
 
-Explain how to use your project
+We tested the design using assertion based tests 
 
 ## External hardware
 
-List external hardware used in your project (e.g. PMOD, LED display, etc), if any
+None
