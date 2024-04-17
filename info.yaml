@@ -1,9 +1,9 @@
 # Tiny Tapeout project information
 project:
   title:        "DLfloat MAC"      # Project title
-  author:       ""      # Your name
+  author:       "Dinesh Venkat G"      # Your name
   discord:      ""      # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
-  description:  ""      # One line description of what your project does
+  description:  "A MAC unit that opereates on DL Float datatypes "      # One line description of what your project does
   language:     "SystemVerilog" # other examples include SystemVerilog, Amaranth, VHDL, etc
   clock_hz:     150000000      # Clock frequency in Hz (or 0 if not applicable)
 
