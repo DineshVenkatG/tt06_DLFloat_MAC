@@ -7,6 +7,7 @@
 
 
 module tt_um_dlfloatmac (
+
     input  wire [7:0] ui_in,    // Dedicated inputs
     output wire [7:0] uo_out,   // Dedicated outputs
     input  wire [7:0] uio_in,   // IOs: Input path
@@ -22,10 +23,9 @@ wire [15:0] c;
 wire [15:0]wa,wb;
 wire write_en;
 
+assign uio_oe  = write_en?8'b11111111:8'b00000000;
 
-assign uio_oe = write_en?8'b11111111:8'b00000000;
-
-
+assign en=1;
 assign data_in = {uio_in,ui_in};
 
 
@@ -41,8 +41,8 @@ assign uo_out = c[7:0];
 endmodule
 
 
-
 ////////reg_wrapper//////////
+
 
 module reg_wrapper(
     input clk,
@@ -61,7 +61,7 @@ always @(posedge clk or negedge rst) begin
         state <= 2'b00; // Initialize state machine
         reg_a <= 16'b0; // Initialize registers
         reg_b <= 16'b0;
-        write_en <= 0;
+        write_en = 0;
     end
     else begin
         case (state)
@@ -88,7 +88,9 @@ endmodule
 
 
 
+
 ///////mac/////////
+
 module dlfloat_mac(clk,a,b,c);
     input [15:0]a,b;
     input clk;
@@ -103,18 +105,23 @@ module dlfloat_mac(clk,a,b,c);
         data_a <= a;
         data_b <= b;
         //fprod1 <= fprod;
-        //c <= fadd;
+       // c <= fadd;
     end 
+    always@(posedge clk)
+    begin 
+        c <= fadd;
+     end 
     dlfloat_mult mul(data_a,data_b,fprod,clk);
     dlfloat_adder add(clk,fprod,c,fadd);
 
     
-    assign c = fadd;
+    //assign c = fadd;
 endmodule 
 
 
 
 /////////////// mult ///////////////
+
 module dlfloat_mult(a,b,c,clk);
     input [15:0]a,b;
     input clk;
@@ -154,6 +161,7 @@ endmodule
 
 
 ////////////adder//////////////
+
 module dlfloat_adder(input clk, input [15:0]a, input [15:0]b, output reg [15:0]c);
     
     reg    [15:0] Num_shift_80; 
