@@ -105,11 +105,16 @@ module dlfloat_mac(clk,a,b,c);
         //fprod1 <= fprod;
         //c <= fadd;
     end 
+	always @(posedge clk)
+		begin
+			c <= fadd;
+		end
+	
     dlfloat_mult mul(data_a,data_b,fprod,clk);
     dlfloat_adder add(clk,fprod,c,fadd);
 
     
-    assign c = fadd;
+    //assign c = fadd;
 endmodule 
 
 
