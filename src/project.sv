@@ -1,12 +1,7 @@
-/*
- * Copyright (c) 2024 Your Name
- * SPDX-License-Identifier: Apache-2.0
- */
-
 `define default_netname none
 
 
-module tt_um_dlfloatmac (
+module tt_um_mac (
     input  wire [7:0] ui_in,    // Dedicated inputs
     output wire [7:0] uo_out,   // Dedicated outputs
     input  wire [7:0] uio_in,   // IOs: Input path
@@ -30,7 +25,7 @@ assign data_in = {uio_in,ui_in};
 
 
 reg_wrapper wrap(clk,rst_n,data_in,wa,wb,write_en);
-dlfloat_mac MAC(clk,wa,wb,c);
+dlfloat_mac MAC(clk,rst_n,wa,wb,c);
 
 
 assign uio_out = c[15:8];
@@ -89,32 +84,41 @@ endmodule
 
 
 ///////mac/////////
-module dlfloat_mac(clk,a,b,c);
+module dlfloat_mac(clk,rst_n,a,b,c);
     input [15:0]a,b;
-    input clk;
-    output bit[15:0]c;
-
+    input clk,rst_n;
+    output reg[15:0]c = 0;
+   //reg [15:0]c_out = 0;
     reg [15:0]data_a,data_b;
     wire [15:0]fprod,fadd;
     //dlfloat_mult(a,b,c,clk);
     //dlfloat_adder(input clk, input [15:0]a, input [15:0]b, output reg [15:0]c);
     always @(posedge clk)
     begin 
-        data_a <= a;
-        data_b <= b;
-        //fprod1 <= fprod;
-        //c <= fadd;
+    if(!rst_n)
+    begin
+	data_a <= 16'b0;
+	data_b <= 16'b0;
+	
+    end 
+    else 
+    begin 
+   data_a <= a;
+   data_b <= b;
+   
+		
+    end 
     end 
 	always @(posedge clk)
 		begin
-			c <= fadd;
+			c<= fadd;
 		end
 	
     dlfloat_mult mul(data_a,data_b,fprod,clk);
-    dlfloat_adder add(clk,fprod,c,fadd);
+dlfloat_adder add(clk,rst_n,fprod,c,fadd);
 
     
-    //assign c = fadd;
+    //assign c = c_out;
 endmodule 
 
 
@@ -159,7 +163,7 @@ endmodule
 
 
 ////////////adder//////////////
-module dlfloat_adder(input clk, input [15:0]a, input [15:0]b, output reg [15:0]c);
+module dlfloat_adder(input clk,input rst_n, input [15:0]a, input [15:0]b, output reg [15:0]c);
     
     reg    [15:0] Num_shift_80; 
     reg    [5:0]  Larger_exp_80,Final_expo_80;
@@ -174,11 +178,19 @@ module dlfloat_adder(input clk, input [15:0]a, input [15:0]b, output reg [15:0]c
     reg    [15:0] c_80;
 
 
-//    always @(posedge clk)
-//    begin
-//        c<= c_80;
-//    end
-    assign c = c_80;
+	always @(posedge clk)
+	begin 
+	if(!rst_n)
+	begin 
+	c <= 0;
+	end 
+	else 
+	begin 
+	c <= c_80;
+	end 
+	end 
+			
+   // assign c = c_80;
     
 
 
